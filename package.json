@@ -1,0 +1,10 @@
+{
+  "name": "create-msfs-glasscockpit",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EranIDar/create-msfs-glasscockpit"
+  },
+  "author": "Eran IDAR",
+  "license": "MIT"
+}
