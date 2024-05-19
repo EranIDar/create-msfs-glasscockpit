@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "target": "ES2017",
+        "module": "ES2015",
+        "strict": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationMap": true,
+        "jsxFactory": "FSComponent.buildComponent", 
+        "jsxFragmentFactory": "FSComponent.Fragment", 
+        "jsx": "react",
+        "outDir": "dist",
+        "types": [
+            "@microsoft/msfs-types/pages/vcockpit/instruments/shared/baseinstrument.d.ts",
+            "@microsoft/msfs-types/pages/vcockpit/core/vcockpit.d.ts",
+            "@microsoft/msfs-types/js/common.d.ts"
+        ],
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
