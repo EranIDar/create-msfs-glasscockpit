@@ -1,0 +1,21 @@
+{
+  "name": "template-vanilla",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "clean:dist": "rd /s /q dist",
+    "clean:node_modules": "rd /s /q node_modules",
+    "build:dev": "cross-env ENV=dev node build.js",
+    "build:prod": "cross-env ENV=prod node build.js",
+    "rebuild:dev": "npm run clean:dist && npm run build:dev",
+    "rebuild:prod": "npm run clean:dist && npm run build:prod",
+    "watch": "cross-env ENV=watch node build.js"  
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.21.1",
+    "esbuild-plugin-copy": "^2.1.1"
+  }
+  
+}
