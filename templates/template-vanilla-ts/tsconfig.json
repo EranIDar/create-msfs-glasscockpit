@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "target": "ES2017",
+        "module": "ES2015",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "dist",
+        "types": [
+            "@microsoft/msfs-types/pages/vcockpit/instruments/shared/baseinstrument.d.ts",
+            "@microsoft/msfs-types/pages/vcockpit/core/vcockpit.d.ts",
+            "@microsoft/msfs-types/js/common.d.ts"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
