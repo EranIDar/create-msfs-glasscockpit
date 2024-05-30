@@ -235,7 +235,7 @@ async function init() {
   }
 
   console.log(`  npm install`);
-  console.log(`  npm run dev`);
+  console.log(`  npm run build:dev`);
   console.log();
 }
 
