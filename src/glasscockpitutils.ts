@@ -1,9 +1,9 @@
+import { pascalCase } from "change-case";
+
 export function isValidGlasscockpitID(value: string): boolean {
-  return /^(?:@[a-z\d\-*~][a-z\d\-*._~]*\/)?[a-zA-Z\d\-~][a-zA-Z\d\-._~]*$/.test(
-    value
-  );
+  return /(?<![^\s])([A-Za-z_$][A-Za-z0-9_$]*)(?![^\s])/.test(value);
 }
 
 export function toValidGlasscockpitID(value: string): string {
-  return value.trim();
+  return pascalCase(value);
 }
