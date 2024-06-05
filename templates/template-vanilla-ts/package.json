@@ -6,6 +6,7 @@
   "scripts": {
     "clean:dist": "rd /s /q dist",
     "clean:node_modules": "rd /s /q node_modules",
+    "clean:all": "npm run clean:dist && npm run clean:node_modules",
     "build:dev": "cross-env ENV=dev node build.js",
     "build:prod": "cross-env ENV=prod node build.js",
     "rebuild:dev": "npm run clean:dist && npm run build:dev",

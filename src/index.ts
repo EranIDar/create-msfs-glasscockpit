@@ -1,11 +1,12 @@
+import { camelCase } from "change-case";
 import fs from "fs";
 import { blue, green, red, reset, yellow } from "kolorist";
 import minimist from "minimist";
 import path from "path";
 import prompts from "prompts";
 import { copy, emptyDir, isEmpty, renameFiles } from "./fileutils";
-import { formatTargetDir, kebabCase } from "./formatters";
-import { isValidGlasscockpitID } from "./glasscockpitutils";
+import { formatTargetDir } from "./formatters";
+import { isValidGlasscockpitID, toValidGlasscockpitID } from "./glasscockpitutils";
 import { isValidPackageName, toValidPackageName } from "./pkgutils";
 
 const argv = minimist<{
@@ -155,7 +156,7 @@ async function init() {
           name: "glasscockpitID",
           type: "text",
           message: reset("Select a glasscockpit ID:"),
-          initial: () => getProjectName(),
+          initial: () => toValidGlasscockpitID(getProjectName()),
           validate: (value) => isValidGlasscockpitID(value) || "Invalid Glasscockpit ID",
         },
       ],
@@ -219,7 +220,7 @@ async function init() {
       `src/${mainFile}`,
       main
         .replace(/glasscockpitID/g, glasscockpitID)
-        .replace(/glasscockpit-id/g, kebabCase(glasscockpitID))
+        .replace(/glasscockpit-id/g, camelCase(glasscockpitID))
     );
   }
 
@@ -235,7 +236,7 @@ async function init() {
   }
 
   console.log(`  npm install`);
-  console.log(`  npm run dev`);
+  console.log(`  npm run build:dev`);
   console.log();
 }
 
