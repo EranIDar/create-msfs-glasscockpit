@@ -5311,6 +5311,99 @@ var require_prompts3 = __commonJS({
   }
 });
 
+// node_modules/change-case/dist/index.js
+var SPLIT_LOWER_UPPER_RE = /([\p{Ll}\d])(\p{Lu})/gu;
+var SPLIT_UPPER_UPPER_RE = /(\p{Lu})([\p{Lu}][\p{Ll}])/gu;
+var SPLIT_SEPARATE_NUMBER_RE = /(\d)\p{Ll}|(\p{L})\d/u;
+var DEFAULT_STRIP_REGEXP = /[^\p{L}\d]+/giu;
+var SPLIT_REPLACE_VALUE = "$1\0$2";
+var DEFAULT_PREFIX_SUFFIX_CHARACTERS = "";
+function split(value) {
+  let result = value.trim();
+  result = result.replace(SPLIT_LOWER_UPPER_RE, SPLIT_REPLACE_VALUE).replace(SPLIT_UPPER_UPPER_RE, SPLIT_REPLACE_VALUE);
+  result = result.replace(DEFAULT_STRIP_REGEXP, "\0");
+  let start = 0;
+  let end = result.length;
+  while (result.charAt(start) === "\0")
+    start++;
+  if (start === end)
+    return [];
+  while (result.charAt(end - 1) === "\0")
+    end--;
+  return result.slice(start, end).split(/\0/g);
+}
+function splitSeparateNumbers(value) {
+  const words = split(value);
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const match = SPLIT_SEPARATE_NUMBER_RE.exec(word);
+    if (match) {
+      const offset = match.index + (match[1] ?? match[2]).length;
+      words.splice(i, 1, word.slice(0, offset), word.slice(offset));
+    }
+  }
+  return words;
+}
+function camelCase(input, options2) {
+  const [prefix, words, suffix] = splitPrefixSuffix(input, options2);
+  const lower = lowerFactory(options2?.locale);
+  const upper = upperFactory(options2?.locale);
+  const transform = options2?.mergeAmbiguousCharacters ? capitalCaseTransformFactory(lower, upper) : pascalCaseTransformFactory(lower, upper);
+  return prefix + words.map((word, index) => {
+    if (index === 0)
+      return lower(word);
+    return transform(word, index);
+  }).join(options2?.delimiter ?? "") + suffix;
+}
+function pascalCase(input, options2) {
+  const [prefix, words, suffix] = splitPrefixSuffix(input, options2);
+  const lower = lowerFactory(options2?.locale);
+  const upper = upperFactory(options2?.locale);
+  const transform = options2?.mergeAmbiguousCharacters ? capitalCaseTransformFactory(lower, upper) : pascalCaseTransformFactory(lower, upper);
+  return prefix + words.map(transform).join(options2?.delimiter ?? "") + suffix;
+}
+function lowerFactory(locale) {
+  return locale === false ? (input) => input.toLowerCase() : (input) => input.toLocaleLowerCase(locale);
+}
+function upperFactory(locale) {
+  return locale === false ? (input) => input.toUpperCase() : (input) => input.toLocaleUpperCase(locale);
+}
+function capitalCaseTransformFactory(lower, upper) {
+  return (word) => `${upper(word[0])}${lower(word.slice(1))}`;
+}
+function pascalCaseTransformFactory(lower, upper) {
+  return (word, index) => {
+    const char0 = word[0];
+    const initial = index > 0 && char0 >= "0" && char0 <= "9" ? "_" + char0 : upper(char0);
+    return initial + lower(word.slice(1));
+  };
+}
+function splitPrefixSuffix(input, options2 = {}) {
+  const splitFn = options2.split ?? (options2.separateNumbers ? splitSeparateNumbers : split);
+  const prefixCharacters = options2.prefixCharacters ?? DEFAULT_PREFIX_SUFFIX_CHARACTERS;
+  const suffixCharacters = options2.suffixCharacters ?? DEFAULT_PREFIX_SUFFIX_CHARACTERS;
+  let prefixIndex = 0;
+  let suffixIndex = input.length;
+  while (prefixIndex < input.length) {
+    const char = input.charAt(prefixIndex);
+    if (!prefixCharacters.includes(char))
+      break;
+    prefixIndex++;
+  }
+  while (suffixIndex > prefixIndex) {
+    const index = suffixIndex - 1;
+    const char = input.charAt(index);
+    if (!suffixCharacters.includes(char))
+      break;
+    suffixIndex = index;
+  }
+  return [
+    input.slice(0, prefixIndex),
+    splitFn(input.slice(prefixIndex, suffixIndex)),
+    input.slice(suffixIndex)
+  ];
+}
+
 // src/index.ts
 var import_fs2 = __toESM(require("fs"), 1);
 
@@ -5453,15 +5546,13 @@ function copy(src, dest) {
 function formatTargetDir(targetDir) {
   return targetDir?.trim().replace(/\/+$/g, "");
 }
-function kebabCase(str) {
-  return str.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/\s+/g, "-").toLowerCase();
-}
 
 // src/glasscockpitutils.ts
 function isValidGlasscockpitID(value) {
-  return /^(?:@[a-z\d\-*~][a-z\d\-*._~]*\/)?[a-zA-Z\d\-~][a-zA-Z\d\-._~]*$/.test(
-    value
-  );
+  return /(?<![^\s])([A-Za-z_$][A-Za-z0-9_$]*)(?![^\s])/.test(value);
+}
+function toValidGlasscockpitID(value) {
+  return pascalCase(value);
 }
 
 // src/pkgutils.ts
@@ -5585,7 +5676,7 @@ async function init() {
           name: "glasscockpitID",
           type: "text",
           message: reset("Select a glasscockpit ID:"),
-          initial: () => getProjectName(),
+          initial: () => toValidGlasscockpitID(getProjectName()),
           validate: (value) => isValidGlasscockpitID(value) || "Invalid Glasscockpit ID"
         }
       ],
@@ -5630,7 +5721,7 @@ Scaffolding project in ${root}...`);
     const main = import_fs2.default.readFileSync(import_path2.default.join(targetDir, `src/${mainFile}`), "utf-8");
     write(
       `src/${mainFile}`,
-      main.replace(/glasscockpitID/g, glasscockpitID).replace(/glasscockpit-id/g, kebabCase(glasscockpitID))
+      main.replace(/glasscockpitID/g, glasscockpitID).replace(/glasscockpit-id/g, camelCase(glasscockpitID))
     );
   }
   const indexHTML = import_fs2.default.readFileSync(import_path2.default.join(targetDir, "src/index.html"), "utf-8");
@@ -5643,7 +5734,7 @@ Done. Now run:
     console.log(`  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`);
   }
   console.log(`  npm install`);
-  console.log(`  npm run dev`);
+  console.log(`  npm run build:dev`);
   console.log();
 }
 init().catch((e) => {
