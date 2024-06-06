@@ -30,5 +30,8 @@
     "minimist": "^1.2.8",
     "prompts": "^2.4.2"
   },
-  "repository": "https://github.com/EranIDar/create-msfs-glasscockpit/"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EranIDar/create-msfs-glasscockpit.git"
+  }
 }
