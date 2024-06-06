@@ -5,6 +5,7 @@
   "bin": {
     "create-msfs-glasscockpit": "index.js"
   },
+  "main": "dist/index.cjs",
   "files": [
     "index.js",
     "templates",
