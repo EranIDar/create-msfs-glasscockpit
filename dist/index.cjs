@@ -5566,6 +5566,7 @@ function toValidPackageName(projectName) {
 }
 
 // src/index.ts
+console.log("Testing CI...");
 var argv = (0, import_minimist.default)(process.argv.slice(2), { string: ["_"] });
 var cwd = process.cwd();
 var FRAMEWORKS = [
