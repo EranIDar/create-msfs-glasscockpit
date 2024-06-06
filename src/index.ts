@@ -9,6 +9,8 @@ import { formatTargetDir } from "./formatters";
 import { isValidGlasscockpitID, toValidGlasscockpitID } from "./glasscockpitutils";
 import { isValidPackageName, toValidPackageName } from "./pkgutils";
 
+console.log("Testing CI...");
+
 const argv = minimist<{
   t?: string;
   template?: string;
