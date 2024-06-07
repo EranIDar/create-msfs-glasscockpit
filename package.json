@@ -33,5 +33,12 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EranIDar/create-msfs-glasscockpit.git"
-  }
+  },
+  "keywords": [
+    "msfs",
+    "glasscockpit",
+    "microsoft flight simulator",
+    "avionics",
+    "create"
+  ]
 }
