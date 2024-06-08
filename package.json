@@ -1,6 +1,6 @@
 {
   "name": "create-msfs-glasscockpit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "bin": {
     "create-msfs-glasscockpit": "index.js"
