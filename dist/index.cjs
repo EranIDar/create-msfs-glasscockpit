@@ -5344,16 +5344,9 @@ function splitSeparateNumbers(value) {
   }
   return words;
 }
-function camelCase(input, options2) {
+function noCase(input, options2) {
   const [prefix, words, suffix] = splitPrefixSuffix(input, options2);
-  const lower = lowerFactory(options2?.locale);
-  const upper = upperFactory(options2?.locale);
-  const transform = options2?.mergeAmbiguousCharacters ? capitalCaseTransformFactory(lower, upper) : pascalCaseTransformFactory(lower, upper);
-  return prefix + words.map((word, index) => {
-    if (index === 0)
-      return lower(word);
-    return transform(word, index);
-  }).join(options2?.delimiter ?? "") + suffix;
+  return prefix + words.map(lowerFactory(options2?.locale)).join(options2?.delimiter ?? " ") + suffix;
 }
 function pascalCase(input, options2) {
   const [prefix, words, suffix] = splitPrefixSuffix(input, options2);
@@ -5361,6 +5354,9 @@ function pascalCase(input, options2) {
   const upper = upperFactory(options2?.locale);
   const transform = options2?.mergeAmbiguousCharacters ? capitalCaseTransformFactory(lower, upper) : pascalCaseTransformFactory(lower, upper);
   return prefix + words.map(transform).join(options2?.delimiter ?? "") + suffix;
+}
+function kebabCase(input, options2) {
+  return noCase(input, { delimiter: "-", ...options2 });
 }
 function lowerFactory(locale) {
   return locale === false ? (input) => input.toLowerCase() : (input) => input.toLocaleLowerCase(locale);
@@ -5716,12 +5712,13 @@ Scaffolding project in ${root}...`);
   const pkg = JSON.parse(import_fs2.default.readFileSync(import_path2.default.join(targetDir, `package.json`), "utf-8"));
   pkg.name = packageName || getProjectName();
   write("package.json", JSON.stringify(pkg, null, 2) + "\n");
+  console.log(glasscockpitID);
   const mainFiles = import_fs2.default.readdirSync(import_path2.default.join(targetDir, "src")).filter((file) => file.startsWith("main."));
   for (const mainFile of mainFiles) {
     const main = import_fs2.default.readFileSync(import_path2.default.join(targetDir, `src/${mainFile}`), "utf-8");
     write(
       `src/${mainFile}`,
-      main.replace(/glasscockpitID/g, glasscockpitID).replace(/glasscockpit-id/g, camelCase(glasscockpitID))
+      main.replace(/glasscockpitID/g, glasscockpitID).replace(/glasscockpit-id/g, kebabCase(glasscockpitID))
     );
   }
   const indexHTML = import_fs2.default.readFileSync(import_path2.default.join(targetDir, "src/index.html"), "utf-8");
