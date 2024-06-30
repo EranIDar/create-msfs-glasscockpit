@@ -1,4 +1,4 @@
-import { camelCase } from "change-case";
+import { kebabCase } from "change-case";
 import fs from "fs";
 import { blue, green, red, reset, yellow } from "kolorist";
 import minimist from "minimist";
@@ -209,6 +209,7 @@ async function init() {
 
   write("package.json", JSON.stringify(pkg, null, 2) + "\n");
 
+  console.log(glasscockpitID);
   // Edit main.*
   const mainFiles = fs
     .readdirSync(path.join(targetDir, "src"))
@@ -220,7 +221,7 @@ async function init() {
       `src/${mainFile}`,
       main
         .replace(/glasscockpitID/g, glasscockpitID)
-        .replace(/glasscockpit-id/g, camelCase(glasscockpitID))
+        .replace(/glasscockpit-id/g, kebabCase(glasscockpitID))
     );
   }
 
